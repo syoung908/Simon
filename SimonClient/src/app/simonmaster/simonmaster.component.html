@@ -10,5 +10,6 @@
 </div>
 <button *ngIf="gameState == GameState.init" (click)="startGame()">click Me</button>
 
-<h1 class="text-white" *ngIf="gameState == GameState.playerTurn">Player Turn</h1>
-<h1 class="text-white" *ngIf="gameState == GameState.cpuTurn">Cpu Turn</h1>
+<h1 class="text-white" *ngIf="gameState === GameState.playerTurn">Player Turn</h1>
+<h1 class="text-white" *ngIf="gameState === GameState.cpuTurn">Cpu Turn</h1>
+<p *ngIf="gameState !== GameState.init">Points: {{playerPoints}}</p>
