@@ -8,25 +8,15 @@ using System.Collections.Concurrent;
 
 namespace SimonAPI {
     public class GameHub: Hub {
-        ConcurrentQueue<Player> _matchmakingQueue;
-        public GameHub() {
+
+        private readonly GameState _gameState;
+        public GameHub(): this(GameState.Instance){}
+        public GameHub(GameState gameState) {
+            _gameState = gameState;
         }
 
-        public async Task JoinMatchmaking(string username) {
-            _matchmakingQueue.Enqueue(new Player() { Name = username, ConnectionID = Context.ConnectionId});
-            if (_matchmakingQueue.Count >= 4) {
-                for (int i = 0; i < 4; i++) {
-                    Player p;
-                    if(_matchmakingQueue.TryDequeue(out p)) {
-                        await Clients.Client(p.ConnectionID).SendAsync("Join Room", "test");
-                    }
-                } 
-            }
+        public override Task OnConnectedAsync() {
+            return base.OnConnectedAsync();
         }
-
-        public async Task JoinGameRoom(string username, string roomId) {
-
-        }
-
     }
 }
