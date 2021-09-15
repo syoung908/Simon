@@ -3,7 +3,7 @@ import { ServicesService } from '../services.service';
 import * as Tone from 'tone';
 
 enum GameState{
-  init,
+  init = 0,
   cpuTurn,
   playerTurn,
   end
@@ -23,18 +23,19 @@ interface Button{
   styleUrls: ['./simonmaster.component.scss']
 })
 export class SimonmasterComponent implements OnInit {
+  GameState = GameState;
   sequence: number[]= [];
-  playerSequence:number[]=[];
+  playerSequence: number[]=[];
   synth: Tone.Synth = new Tone.Synth().toMaster();
-  gameState:GameState = GameState.init;
+  gameState: GameState = this.GameState.init;
   playerPoints: number = 0;
 
   //Button map
   buttons: Map<string, Button> = new Map<string, Button>([
-    ["red", {id: 1, style: {opacity: "0.5"}, note: 'D2'}],
-    ["blue", {id: 2, style: {opacity: "0.5"}, note: 'F2'}],
-    ["yellow", {id: 3, style: {opacity: "0.5"}, note: 'C2'}],
-    ["green", {id: 4, style: {opacity: "0.5"}, note: 'E2'}]
+    ["red", {id: 0, style: {opacity: "0.5"}, note: 'D2'}],
+    ["blue", {id: 1, style: {opacity: "0.5"}, note: 'F2'}],
+    ["yellow", {id: 2, style: {opacity: "0.5"}, note: 'C2'}],
+    ["green", {id: 3, style: {opacity: "0.5"}, note: 'E2'}]
   ]);
 
   constructor(private myservice:ServicesService) { }
@@ -43,17 +44,50 @@ export class SimonmasterComponent implements OnInit {
     this.sequence = this.myservice.generateArray(); //Update this to subscribe from backend
   }
 
-  private getColorFromId(id: number): string | undefined{
-    return [...this.buttons].filter(([key, val]) => val.id === id).pop()?.[0];
+  //Returns color string from id number. Returns empty string if id is not found.
+  private getColorFromId(id: number): string{
+    let color = [...this.buttons].filter(([key, val]) => val.id === id).pop()?.[0];
+    return (color ? color : "");
   }
 
   //Plays incoming sequence for player
   playSequence(){
-    this.sequence.forEach(x => {
+    this.sequence.forEach((x, i) => {
       setTimeout(() => {
-        this.activateButton(this.getColorFromId(x)!);
-      }, x * 500)
-    })
+        this.activateButton(this.getColorFromId(x));
+        console.log(x);
+        if(i === this.sequence.length - 1) this.gameState = this.GameState.playerTurn;
+      }, i * 500);
+    });
+  }
+
+  buttonPress(color: string){
+    if(this.gameState === this.GameState.playerTurn){
+      this.activateButton(color);
+      this.gameLogic(color);
+    }
+  }
+
+  private gameLogic(color: string){
+    let last = this.playerSequence.push(this.buttons.get(color)!.id) - 1;
+
+    if(this.playerSequence.length <= this.sequence.length && this.playerSequence[last] === this.sequence[last]){
+      this.playerPoints++;
+    }
+    else{
+      console.log("You lose!")
+      this.gameState = this.GameState.init;
+      this.playerSequence = [];
+      this.sequence = this.myservice.generateArray();
+    }
+
+    if(this.playerSequence.length === this.sequence.length){
+      console.log("You win!");
+      this.sequence.push(Math.floor(Math.random() * 4));
+      this.playerSequence = [];
+      this.gameState = this.GameState.cpuTurn;
+      setTimeout(() => this.playSequence(), 1000);
+    }
   }
 
   //Lights up button, plays note, and activates game logic based on game state
@@ -63,6 +97,11 @@ export class SimonmasterComponent implements OnInit {
     this.synth.triggerAttackRelease(button.note, '8n');
     setTimeout(() => {
       button.style.opacity = "0.5";
-    }, 500)
+    }, 300);
+  }
+
+  startGame(){
+    this.gameState = this.GameState.cpuTurn;
+    this.playSequence();
   }
 }
