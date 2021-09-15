@@ -1,0 +1,27 @@
+.quarter{
+    width: 250px;
+    height: 250px;
+    border: 1px solid black;
+    display: inline-block;
+}
+// .quarter:hover{
+//     background-color:white;
+//     cursor: pointer;
+// }
+.quarter-red{
+    border-bottom-left-radius:100%;
+    background: red;   
+}
+.quarter-green{
+    border-top-right-radius:100%;
+    background: green;
+}
+.quarter-blue{
+    border-bottom-right-radius:100%;
+    background: blue;
+}
+.quarter-yellow{
+    border-top-left-radius:100%;
+    background: yellow;
+    
+}
