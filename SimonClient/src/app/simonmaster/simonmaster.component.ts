@@ -1,7 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ServicesService } from '../services.service';
 import * as Tone from 'tone';
-//import { clearInterval } from 'timers';
+
+enum GameState{
+  init,
+  cpuTurn,
+  playerTurn,
+  end
+}
+
+interface Button{
+  id: number,
+  style: {
+    opacity: string
+  },
+  note: string
+}
 
 @Component({
   selector: 'app-simonmaster',
@@ -11,77 +25,44 @@ import * as Tone from 'tone';
 export class SimonmasterComponent implements OnInit {
   sequence: number[]= [];
   playerSequence:number[]=[];
+  synth: Tone.Synth = new Tone.Synth().toMaster();
+  gameState:GameState = GameState.init;
+  playerPoints: number = 0;
 
-  color: {[name: string]: number} = {"red": 1, "blue":2, "yellow":3, "green":4}
-  style_red = {opacity:"0.5"}
-  style_blue = {opacity:"0.5"}
-  style_green = {opacity:"0.5"}
-  style_yellow = {opacity:"0.5"}
-  notes: string[]=[];
-  synth: any;  
-  gameState:string = "";
+  //Button map
+  buttons: Map<string, Button> = new Map<string, Button>([
+    ["red", {id: 1, style: {opacity: "0.5"}, note: 'D2'}],
+    ["blue", {id: 2, style: {opacity: "0.5"}, note: 'F2'}],
+    ["yellow", {id: 3, style: {opacity: "0.5"}, note: 'C2'}],
+    ["green", {id: 4, style: {opacity: "0.5"}, note: 'E2'}]
+  ]);
 
-  
-  
   constructor(private myservice:ServicesService) { }
 
   ngOnInit(): void {
-    this.sequence = this.myservice.generateArray();
-    this.synth = new Tone.Synth().toMaster();
-    this.notes = ['C2', 'D2', 'E2', 'F2'];
-    this.gameState = "inactive"
+    this.sequence = this.myservice.generateArray(); //Update this to subscribe from backend
   }
 
-  play(){
+  private getColorFromId(id: number): string | undefined{
+    return [...this.buttons].filter(([key, val]) => val.id === id).pop()?.[0];
+  }
+
+  //Plays incoming sequence for player
+  playSequence(){
     this.sequence.forEach(x => {
-      let timer = setInterval(() => {
-        if( x == 1) this.activateButton("red");
-        else if( x == 2) this.activateButton("blue");
-        else if( x == 3) this.activateButton("yellow");
-        else if( x == 4) this.activateButton("green");
-        clearInterval(timer);
-      },x* 500)
+      setTimeout(() => {
+        this.activateButton(this.getColorFromId(x)!);
+      }, x * 500)
     })
   }
 
+  //Lights up button, plays note, and activates game logic based on game state
   activateButton(color: string){
-    if(color == "yellow"){
-      setTimeout(() => {
-        this.style_yellow = {opacity: "0.5"};
-      }, 500)
-      this.style_yellow = {opacity: "1"};
-      this.playNote('D2');
-    }
-    else if(color == "green"){
-      setTimeout(() => {
-        this.style_green = {opacity: "0.5"};
-      }, 500)
-      this.style_green = {opacity: "1"};
-      this.playNote('F2');
-    }
-    else if(color == "red"){
-      setTimeout(() => {
-        this.style_red = {opacity: "0.5"};
-      }, 500)
-      this.style_red = {opacity: "1"};
-      this.playNote('C2');
-    }
-    else if(color == "blue"){
-      setTimeout(() => {
-        this.style_blue = {opacity: "0.5"};
-      }, 500)
-      this.style_blue = {opacity: "1"};
-      this.playNote('E2');
-    }
-
-    if(this.gameState=="playerTurn") this.playerSequence.push(this.color[color])
+    let button = this.buttons.get(color)!;
+    button.style.opacity= "1";
+    this.synth.triggerAttackRelease(button.note, '8n');
+    setTimeout(() => {
+      button.style.opacity = "0.5";
+    }, 500)
   }
-
- 
-  playNote(note: string) {
-    this.synth.triggerAttackRelease(note, '8n');
-  }
-
-
-
 }
