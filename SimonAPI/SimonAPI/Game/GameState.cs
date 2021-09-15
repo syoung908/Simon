@@ -4,20 +4,12 @@ using System.Collections.Generic;
 
 namespace SimonAPI {
     public class GameState { 
-
-        private readonly static Lazy<GameState> _instance = new Lazy<GameState>(() => new GameState());
         private readonly ConcurrentDictionary<string, Player> _players;
         private int _round = 1;
         private bool _inProgress = false;
 
         public GameState() {
             _players = new ConcurrentDictionary<string, Player>();
-        }
-
-        public static GameState Instance {
-            get {
-                return _instance.Value;
-            }
         }
 
         public bool AddPlayer(string connectionId, string playerName) {

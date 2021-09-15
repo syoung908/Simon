@@ -7,7 +7,7 @@ namespace SimonAPI {
     public class GameHub: Hub {
 
         private readonly GameState _gameState;
-        public GameHub(): this(GameState.Instance){}
+        //public GameHub(): this(GameState.Instance){}
         public GameHub(GameState gameState) {
             _gameState = gameState;
         }
@@ -17,12 +17,13 @@ namespace SimonAPI {
         }
 
         public override Task OnDisconnectedAsync(Exception exception) {
-            LeaveGame().RunSynchronously();
+            LeaveGame().Wait();
             return base.OnDisconnectedAsync(exception);
         }
 
         public async Task JoinGame(string playerName) {
             if (!_gameState.InProgress()) {
+                Console.WriteLine($"{Context.ConnectionId} : {playerName}");
                 await Groups.AddToGroupAsync(Context.ConnectionId, "default");
                 _gameState.AddPlayer(Context.ConnectionId, playerName);
                 await Clients.Group("default").SendAsync("Players", _gameState.GetPlayers());
