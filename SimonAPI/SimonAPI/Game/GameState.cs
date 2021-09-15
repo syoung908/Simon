@@ -6,11 +6,12 @@ namespace SimonAPI {
     public class GameState { 
 
         private readonly static Lazy<GameState> _instance = new Lazy<GameState>(() => new GameState());
-        private readonly ConcurrentDictionary<Player, PlayerState> _players;
+        private readonly ConcurrentDictionary<string, Player> _players;
         private int _round = 1;
+        private bool _inProgress = false;
 
         public GameState() {
-            _players = new ConcurrentDictionary<Player, PlayerState>();
+            _players = new ConcurrentDictionary<string, Player>();
         }
 
         public static GameState Instance {
@@ -19,12 +20,31 @@ namespace SimonAPI {
             }
         }
 
-        public bool AddPlayer(Player player) {
-            return _players.TryAdd(player, PlayerState.NotReady);
+        public bool AddPlayer(string connectionId, string playerName) {
+            return _players.TryAdd(connectionId, new Player() { Name = playerName});
         }
 
-        public bool RemovePlayer(Player player) {
+        public bool RemovePlayer(string connectionId) {
+            return _players.TryRemove(connectionId, out _);
+        }
 
+        public void SetPlayerState(string connectionId, PlayerState state) {
+            _players[connectionId].State = state;
+        }
+
+        public bool AllPlayersReady() {
+            foreach(Player player in _players.Values) {
+                if (player.State == PlayerState.NotReady) return false;
+            }
+            return true;
+        }
+
+        public bool InProgress() {
+            return _inProgress;
+        }
+
+        public ICollection<Player> GetPlayers() {
+            return _players.Values; 
         }
 
         public IList<int> GenerateSequence() {
@@ -35,13 +55,6 @@ namespace SimonAPI {
             }
 
             return sequence;
-        }
-
-        public bool IsRoundOver() {
-            foreach(PlayerState state in _players.Values) {
-                if (state == PlayerState.Playing) return false;
-            }
-            return true;
         }
     }
 }
