@@ -31,10 +31,10 @@ export class SimonmasterComponent implements OnInit {
 
   //Button map
   buttons: Map<string, Button> = new Map<string, Button>([
-    ["red", {id: 1, style: {opacity: "0.5"}, note: 'D2'}],
-    ["blue", {id: 2, style: {opacity: "0.5"}, note: 'F2'}],
-    ["yellow", {id: 3, style: {opacity: "0.5"}, note: 'C2'}],
-    ["green", {id: 4, style: {opacity: "0.5"}, note: 'E2'}]
+    ["red", {id: 0, style: {opacity: "0.5"}, note: 'D2'}],
+    ["blue", {id: 1, style: {opacity: "0.5"}, note: 'F2'}],
+    ["yellow", {id: 2, style: {opacity: "0.5"}, note: 'C2'}],
+    ["green", {id: 3, style: {opacity: "0.5"}, note: 'E2'}]
   ]);
 
   constructor(private myservice:ServicesService) { }
@@ -43,15 +43,17 @@ export class SimonmasterComponent implements OnInit {
     this.sequence = this.myservice.generateArray(); //Update this to subscribe from backend
   }
 
-  private getColorFromId(id: number): string | undefined{
-    return [...this.buttons].filter(([key, val]) => val.id === id).pop()?.[0];
+  //Returns color string from id number. Will return empty string if no matching id is found in map
+  private getColorFromId(id: number): string{
+    let color = [...this.buttons].filter(([key, val]) => val.id === id).pop()?.[0]
+    return (color ? color : "");
   }
 
   //Plays incoming sequence for player
   playSequence(){
     this.sequence.forEach(x => {
       setTimeout(() => {
-        this.activateButton(this.getColorFromId(x)!);
+        this.activateButton(this.getColorFromId(x));
       }, x * 500)
     })
   }

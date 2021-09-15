@@ -8,6 +8,6 @@ export class ServicesService {
   constructor() { }
 
   generateArray():any{
-    return [1,2,3,4];
+    return [0,1,2,3];
   }
 }
