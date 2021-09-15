@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimonAPI", "SimonAPI\SimonAPI.csproj", "{82A2770E-02D0-496C-A80A-1DB5D070E126}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{82A2770E-02D0-496C-A80A-1DB5D070E126}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82A2770E-02D0-496C-A80A-1DB5D070E126}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82A2770E-02D0-496C-A80A-1DB5D070E126}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82A2770E-02D0-496C-A80A-1DB5D070E126}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E5C1F08E-C43B-4DE8-B01E-CFE27D714850}
+	EndGlobalSection
+EndGlobal
