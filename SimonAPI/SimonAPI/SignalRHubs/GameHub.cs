@@ -47,9 +47,23 @@ namespace SimonAPI {
             }
         }
 
-        public async Task PlayerGameStatus(string state) {
+        public async Task SetPlayerState(string state) {
             _gameState.SetPlayerState(Context.ConnectionId, state);
             await Clients.Group("default").SendAsync("Players", _gameState.GetPlayers());
+
+            if (_gameState.RoundReady()) {
+                await Clients.Group("default").SendAsync("Game", "Round Start");
+                await Clients.Group("default").SendAsync("GameSequence", _gameState.GenerateSequence());
+            }
+        }
+
+        public async Task SubmitRoundResults(bool survived) {
+            _gameState.SetPlayerState(Context.ConnectionId, survived ? "WonRound" : "LostRound");
+            await Clients.Group("default").SendAsync("Players", _gameState.GetPlayers());
+
+            if (_gameState.RoundOver()) {
+                await Clients.Group("default").SendAsync("Game", "Round End");
+            }
         }
     }
 }

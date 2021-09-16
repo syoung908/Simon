@@ -7,6 +7,7 @@ namespace SimonAPI {
         private readonly ConcurrentDictionary<string, Player> _players;
         private int _round = 1;
         private bool _inProgress = false;
+        private Player playerWon = null;
 
         public GameState() {
             _players = new ConcurrentDictionary<string, Player>();
@@ -42,7 +43,9 @@ namespace SimonAPI {
 
         public void BeginRound() {
             foreach (Player player in _players.Values) {
-                player.State = "Playing";
+                if (player.State == "GameReady") {
+                    player.State = "Playing";
+                }
             }
         }
 
