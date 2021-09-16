@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ServicesService } from '../services.service';
 import * as Tone from 'tone';
 import { GameService } from '../services/game.service';
+import { Player } from '../models/player.model';
 
 enum GameState{
   init = 0,
@@ -18,7 +19,6 @@ interface Button{
   note: string
 }
 
-
 @Component({
   selector: 'app-simonmaster',
   templateUrl: './simonmaster.component.html',
@@ -30,7 +30,7 @@ export class SimonmasterComponent implements OnInit {
   playerSequence: number[]=[];
   synth: Tone.Synth = new Tone.Synth().toMaster();
   gameState: GameState = this.GameState.init;
-  playerPoints: number = 0;
+  playerList: Player[] = [];
 
   //Button map
   buttons: Map<string, Button> = new Map<string, Button>([
@@ -44,6 +44,7 @@ export class SimonmasterComponent implements OnInit {
 
   ngOnInit(): void {
     this.sequence = this.myservice.generateArray(); //Update this to subscribe from backend
+    this.startGame();
   }
 
   //Returns color string from id number. Returns empty string if id is not found.
@@ -53,11 +54,10 @@ export class SimonmasterComponent implements OnInit {
   }
 
   //Plays incoming sequence for player
-  playSequence(){
+  private playSequence(){
     this.sequence.forEach((x, i) => {
       setTimeout(() => {
         this.activateButton(this.getColorFromId(x));
-        console.log(x);
         if(i === this.sequence.length - 1) this.gameState = this.GameState.playerTurn;
       }, i * 500);
     });
@@ -74,7 +74,7 @@ export class SimonmasterComponent implements OnInit {
     let last = this.playerSequence.push(this.buttons.get(color)!.id) - 1;
 
     if(this.playerSequence.length <= this.sequence.length && this.playerSequence[last] === this.sequence[last]){
-      this.playerPoints++;
+
     }
     else{
       console.log("You lose!")
@@ -93,7 +93,7 @@ export class SimonmasterComponent implements OnInit {
   }
 
   //Lights up button, plays note, and activates game logic based on game state
-  activateButton(color: string){
+  private activateButton(color: string){
     let button = this.buttons.get(color)!;
     button.style.opacity= "1";
     this.synth.triggerAttackRelease(button.note, '8n');

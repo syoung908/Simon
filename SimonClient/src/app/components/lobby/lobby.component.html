@@ -3,17 +3,16 @@
   <div id="lobby-content" class="container-fluid">
     <div id="ready-card" class="card">
       <div id="ready-card-body" class="card-body text-center">
-        <div *ngIf="allPlayersReady; else waiting">
-          <h4>Starting in: {{countdownTimer}}</h4>
+        <div *ngIf="!gameStarted else simon">
+          <div *ngIf="allPlayersReady; else waiting">
+            <h4>Starting in: {{countdownTimer}}</h4>
+          </div>
         </div>
-        <button id="ready-btn" class="btn" [ngClass]="playerReady ? 'btn-success': 'btn-primary'" [disabled]="allPlayersReady" (click)="toggleReady()">
-          {{playerReady ? 'Cancel': 'Ready'}}
-        </button>
       </div>
     </div>
     <div id="player-list-card" class="card">
       <div class="card-header text-center">
-        Players In Lobby: {{playerList.length}}
+        Players In {{listText}}: {{playerList.length}}
       </div>
       <div class="card-body">
         <ul class="list-group list-group-flush">
@@ -30,4 +29,11 @@
 
 <ng-template #waiting>
   <h4>Waiting for all players to be ready...</h4>
+  <button id="ready-btn" class="btn" [ngClass]="playerReady ? 'btn-success': 'btn-primary'" [disabled]="allPlayersReady" (click)="toggleReady()">
+    {{playerReady ? 'Cancel': 'Ready'}}
+  </button>
+</ng-template>
+
+<ng-template #simon>
+  <app-simonmaster></app-simonmaster>
 </ng-template>

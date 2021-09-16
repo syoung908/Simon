@@ -4,8 +4,7 @@ import { LobbyComponent } from './components/lobby/lobby.component';
 import { SimonmasterComponent } from './simonmaster/simonmaster.component';
 
 const routes: Routes = [
-  {path: "", component: LobbyComponent},
-  {path: "simon", component: SimonmasterComponent, pathMatch: 'full'},
+  {path: "", component: LobbyComponent}
 ];
 
 @NgModule({

@@ -13,6 +13,8 @@ export class LobbyComponent implements OnInit {
   public playerReady: boolean = false;
   public allPlayersReady: boolean = false;
   public countdownTimer: number;
+  public gameStarted: boolean = false;
+  public listText: string = "Lobby";
 
   constructor(private gameservice: GameService, private router: Router) {
     this.countdownTimer = 10;
@@ -30,7 +32,8 @@ export class LobbyComponent implements OnInit {
     var timer = setInterval(() => {
       if (this.countdownTimer <= 0){
         clearInterval(timer);
-        this.router.navigate(['simon']);
+        this.gameStarted = true;
+        this.listText = "Game";
       } else {
         this.countdownTimer -= 1;
       }
