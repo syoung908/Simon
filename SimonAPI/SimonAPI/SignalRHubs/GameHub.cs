@@ -39,10 +39,11 @@ namespace SimonAPI {
         }
 
         public async Task PlayerReady(bool isReady) {
-            PlayerState state = isReady ? PlayerState.Ready : PlayerState.NotReady;
+            string state = isReady ? "Ready" : "NotReady";
             _gameState.SetPlayerState(Context.ConnectionId, state);
+            await Clients.Group("default").SendAsync("Players", _gameState.GetPlayers());
 
-            if(_gameState.AllPlayersReady()) {
+            if (_gameState.AllPlayersReady()) {
                 await Clients.Group("default").SendAsync("Game", "Start");
             }
         }
