@@ -40,7 +40,7 @@ namespace SimonAPI {
         }
 
         public void EndGame() {
-
+            _inProgress = false;
         }
 
         public bool IsRoundOver() {
@@ -70,7 +70,7 @@ namespace SimonAPI {
                 foreach (Player player in _players.Values) {
                     if (player.State == "WonRound" || player.State == "Playing") playersRemaining++;
                 }
-
+                Console.WriteLine(playersRemaining);
                 if (playersRemaining == 1) playerWon = _players.Values.Where(p => p.State == "WonRound").SingleOrDefault();
             }
         }
@@ -88,9 +88,8 @@ namespace SimonAPI {
                 if (player.State == "WonRound") {
                     player.State = "GameReady";
                 }
-
-                _round++;
             }
+            _round++;
         }
 
         public bool AreAllPlayersRoundReady() {
@@ -118,6 +117,10 @@ namespace SimonAPI {
             }
 
             return sequence;
+        }
+
+        public Player getWinner() {
+            return playerWon;
         }
     }
 }

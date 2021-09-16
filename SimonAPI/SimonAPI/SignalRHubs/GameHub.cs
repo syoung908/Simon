@@ -54,6 +54,7 @@ namespace SimonAPI {
 
             if (_gameState.AreAllPlayersRoundReady()) {
                 _gameState.BeginGame();
+                _gameState.BeginRound();
                 await Clients.Group("default").SendAsync("Game", "Round Start");
                 await Clients.Group("default").SendAsync("GameSequence", _gameState.GenerateSequence());
             }
@@ -64,9 +65,11 @@ namespace SimonAPI {
             _gameState.PlayerSurvived(Context.ConnectionId, survived);
             Console.WriteLine($"{Context.ConnectionId} : {survived}");
             if (_gameState.IsRoundOver()) {
+                Console.WriteLine("ROUND OVER");
                 await Clients.Group("default").SendAsync("Game", "Round End");
                 if(_gameState.IsGameOver()) {
-                    Console.WriteLine("GAME OVER");
+                    Player winner = _gameState.getWinner();
+                    await Clients.Group("default").SendAsync("Game", (winner == null)? "Game Over" : $"'{winner.Name}' Won");
                     _gameState.EndGame();
                 } else {
                     _gameState.EndRound();
