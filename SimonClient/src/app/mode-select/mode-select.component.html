@@ -1,0 +1,18 @@
+<h1>Welcome to Simon Says!</h1>
+<div *ngIf="modeType === ModeType.unselected">
+    <h1>Select a game mode:</h1>
+    <div class="d-flex justify-content-center">
+        <button type="button" class="btn btn-primary" style="margin: 1%;" (click)="TypeSelect('singleplayer')">Single
+            Player</button>
+        <button type="button" class="btn btn-primary" style="margin: 1%;"
+            (click)="TypeSelect('multiplayer')">Multiplayer</button>
+    </div>
+</div>
+
+<div *ngIf="modeType === ModeType.singlePlayer">
+    <app-simonmaster></app-simonmaster>
+</div>
+
+<div *ngIf="modeType === ModeType.multiPlayer">
+    <app-lobby></app-lobby>
+</div>
