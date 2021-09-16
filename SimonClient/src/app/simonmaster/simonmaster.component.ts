@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ServicesService } from '../services.service';
 import * as Tone from 'tone';
 import { GameService } from '../services/game.service';
+import { Router } from '@angular/router';
 
 enum GameState{
   init = 0,
@@ -41,7 +42,7 @@ export class SimonmasterComponent implements OnInit {
     ["green", {id: 3, style: {opacity: "0.5"}, note: 'E2'}]
   ]);
 
-  constructor(private myservice:ServicesService, private gameservice: GameService) { }
+  constructor(private myservice:ServicesService, private gameservice: GameService, private router: Router) { }
 
   ngOnInit(): void {
     this.sequence = this.myservice.generateArray(); //Update this to subscribe from backend
@@ -107,5 +108,8 @@ export class SimonmasterComponent implements OnInit {
     this.gameState = this.GameState.cpuTurn;
     this.result = "";
     this.playSequence();
+  }
+  resetMode(){
+        this.router.navigate(['']);
   }
 }

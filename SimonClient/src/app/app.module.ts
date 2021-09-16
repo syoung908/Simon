@@ -8,13 +8,15 @@ import { ServicesService } from './services.service';
 import { SimonmasterComponent } from './simonmaster/simonmaster.component';
 import { LobbyComponent } from './components/lobby/lobby.component';
 import { UsernameComponent } from './components/username/username.component';
+import { ModeSelectComponent } from './mode-select/mode-select.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SimonmasterComponent,
     LobbyComponent,
-    UsernameComponent
+    UsernameComponent,
+    ModeSelectComponent
   ],
   imports: [
     BrowserModule,

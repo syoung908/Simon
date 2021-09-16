@@ -8,10 +8,13 @@
         <div class="quarter-red quarter" [ngStyle]="buttons.get('red')!.style" (click)="buttonPress('red')"></div>
         <div class="quarter-blue quarter" [ngStyle]="buttons.get('blue')!.style" (click)="buttonPress('blue')"></div>
     </div>
-    <div class="row justify-content-center">
-        <button type="button" class="replay-btn" *ngIf="gameState == GameState.init" (click)="startGame()">Start Game</button>
+    <div class="d-flex justify-content-center">
+        <button class="btn btn-primary" style="margin: 10px;" *ngIf="gameState == GameState.init"
+            (click)="startGame()">Start Game</button>
+        <button class="btn btn-primary" style="margin: 10px;" *ngIf="gameState == GameState.init"
+            (click)="resetMode()">Return to Menu</button>
     </div>
-    <div class = "result-box">
+    <div class="result-box">
         <h1 class="text-dark" *ngIf="gameState === GameState.playerTurn">Player Turn</h1>
         <h1 class="text-dark" *ngIf="gameState === GameState.cpuTurn">Cpu Turn</h1>
         <h1 *ngIf="gameState !== GameState.init">Points: {{playerPoints}}</h1>
