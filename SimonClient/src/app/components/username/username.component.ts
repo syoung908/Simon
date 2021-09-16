@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-username',
@@ -7,20 +8,21 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 })
 export class UsernameComponent implements OnInit {
 
-  username: string = "";
+  userName: string = "";
   showModal: string = "block";
-  @Output() newUsernameEvent = new EventEmitter<string>();
-  constructor() { }
+  //@Output() newUsernameEvent = new EventEmitter<string>();
+  constructor(public userService: UserService) { }
 
   ngOnInit(): void {
     this.showModal = "block"
   }
 
   OnCreateUsername() {
-    this.newUsernameEvent.emit(this.username)
+    //this.newUsernameEvent.emit(this.username)
+    this.userService.userName.next(this.userName);
   }
   checkButton() {
-    if (!this.username || this.username.length < 3) {
+    if (!this.userName || this.userName.length < 3) {
       return true;
     } else {
       return false;

@@ -9,12 +9,27 @@
         <div class="quarter-blue quarter" [ngStyle]="buttons.get('blue')!.style" (click)="buttonPress('blue')"></div>
     </div>
     <div class="row justify-content-center">
-        <button type="button" class="replay-btn" *ngIf="gameState == GameState.init" (click)="startGame()">Start Game</button>
+        <button type="button" class="replay-btn" *ngIf="gameState == GameState.init" (click)="startGame()">Start
+            Game</button>
     </div>
-    <div class = "result-box">
+    <div class="result-box">
         <h1 class="text-dark" *ngIf="gameState === GameState.playerTurn">Player Turn</h1>
         <h1 class="text-dark" *ngIf="gameState === GameState.cpuTurn">Cpu Turn</h1>
         <h1 *ngIf="gameState !== GameState.init">Points: {{playerPoints}}</h1>
         <h1 class="text-dark" *ngIf="result !== '' && gameState !== GameState.playerTurn">{{result}}</h1>
+    </div>
+</div>
+<div id="player-list-card" class="card">
+    <div class="card-header text-center">
+        Players In Lobby: {{playerList.length}}
+    </div>
+    <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li *ngFor="let player of playerList"
+                [ngClass]="player.state == 'Ready' ? 'list-group-item-success': 'list-group-item-danger'"
+                class="list-group-item">
+                {{player.name}}
+            </li>
+        </ul>
     </div>
 </div>

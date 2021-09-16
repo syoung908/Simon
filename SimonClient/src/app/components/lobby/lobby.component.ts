@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Player } from 'src/app/models/player.model';
 import { GameService } from 'src/app/services/game.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-lobby',
@@ -17,14 +18,12 @@ export class LobbyComponent implements OnInit {
     name: "",
     state:""
   };
-  constructor(private gameservice: GameService, private router: Router) {
+  constructor(private gameservice: GameService, private userservice: UserService, private router: Router) {
     this.countdownTimer = 10;
     this.subscribeToEvents();
   }
 
   ngOnInit(): void {
-    // document.getElementById("exampleModalToggle")?.style.setProperty("display","block")
-    this.player.name = sessionStorage.getItem("username");
   }
 
   public toggleReady(): void {
@@ -55,17 +54,12 @@ export class LobbyComponent implements OnInit {
         this.startCountdown();
       }
     });
-  }
 
-  getUsername(username: string){
-    
-     sessionStorage.setItem("username",username)
-    if(username) {
-      this.gameservice.joinGame(username);
-      this.player.name = username;
-    }
-    else{}
-   
+    this.userservice.userName.subscribe(username => {
+      if(username) {
+        this.gameservice.joinGame(username);
+        this.player.name = username;
+      }
+    });
   }
-
 }

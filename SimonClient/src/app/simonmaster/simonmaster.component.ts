@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { ServicesService } from '../services.service';
 import * as Tone from 'tone';
 import { GameService } from '../services/game.service';
@@ -50,6 +50,10 @@ export class SimonmasterComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscribeToEvents();
+  }
+
+  ngOnDestroy(): void {
+    console.log("Dismounting...");
   }
 
   //Returns color string from id number. Returns empty string if id is not found.

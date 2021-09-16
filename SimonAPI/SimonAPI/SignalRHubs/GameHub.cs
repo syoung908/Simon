@@ -65,7 +65,6 @@ namespace SimonAPI {
             _gameState.PlayerSurvived(Context.ConnectionId, survived);
             Console.WriteLine($"{Context.ConnectionId} : {survived}");
             if (_gameState.IsRoundOver()) {
-                Console.WriteLine("ROUND OVER");
                 await Clients.Group("default").SendAsync("Game", "Round End");
                 if(_gameState.IsGameOver()) {
                     Player winner = _gameState.getWinner();
