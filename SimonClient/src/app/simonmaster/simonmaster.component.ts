@@ -31,6 +31,7 @@ export class SimonmasterComponent implements OnInit {
   synth: Tone.Synth = new Tone.Synth().toMaster();
   gameState: GameState = this.GameState.init;
   playerPoints: number = 0;
+  result?:string;
 
   //Button map
   buttons: Map<string, Button> = new Map<string, Button>([
@@ -77,14 +78,14 @@ export class SimonmasterComponent implements OnInit {
       this.playerPoints++;
     }
     else{
-      console.log("You lose!")
+      this.result = "You lose!";
       this.gameState = this.GameState.init;
       this.playerSequence = [];
       this.sequence = this.myservice.generateArray();
     }
 
     if(this.playerSequence.length === this.sequence.length){
-      console.log("You win!");
+      this.result = "Keep it going!";
       this.sequence.push(Math.floor(Math.random() * 4));
       this.playerSequence = [];
       this.gameState = this.GameState.cpuTurn;
@@ -104,6 +105,7 @@ export class SimonmasterComponent implements OnInit {
 
   startGame(){
     this.gameState = this.GameState.cpuTurn;
+    this.result = "";
     this.playSequence();
   }
 }

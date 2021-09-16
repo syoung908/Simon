@@ -1,7 +1,7 @@
 .quarter{
     width: 250px;
     height: 250px;
-    border: 1px solid black;
+    border: 10px solid black;
     display: inline-block;
 }
 // .quarter:hover{
@@ -28,4 +28,17 @@
     border-bottom-right-radius:60%;
     background: yellow;
     
+}
+
+.replay-btn{
+    width: 20%;
+    margin: 1em;
+    background: #525252;
+    color: white;
+    border-radius: 8px;
+}
+
+.result-box{
+    justify-content: center;
+    text-align: center;
 }
