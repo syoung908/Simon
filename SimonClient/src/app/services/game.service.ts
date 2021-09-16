@@ -13,6 +13,7 @@ export class GameService {
   public connectedToGame = new BehaviorSubject<boolean>(false);
   public playerList = new BehaviorSubject<Array<Player>>([]);
   public gameEventChannel = new EventEmitter<string>();
+  public gameSequenceChannel = new EventEmitter<Array<number>>();
 
   constructor() {
     this.hubConnection = new HubConnectionBuilder()
@@ -62,6 +63,14 @@ export class GameService {
     this.hubConnection.invoke("PlayerReady", isReady);
   }
 
+  public setReadyGameStart() {
+    this.hubConnection.invoke("ReadyGameStart");
+  }
+
+  public submitRound(survived: boolean) {
+    this.hubConnection.invoke("SubmitRoundResults", survived);
+  }
+
 
   private registerOnServerEvents(): void {
     this.hubConnection.on('Players', (data: Array<Player>) => {
@@ -71,6 +80,11 @@ export class GameService {
 
     this.hubConnection.on('Game', (data: string)=> {
       this.gameEventChannel.emit(data);
+      console.log(data);
+    });
+
+    this.hubConnection.on('GameSequence', (data: Array<number>) => {
+      this.gameSequenceChannel.emit(data);
       console.log(data);
     });
   }

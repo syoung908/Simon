@@ -47,23 +47,36 @@ namespace SimonAPI {
             }
         }
 
-        public async Task SetPlayerState(string state) {
-            _gameState.SetPlayerState(Context.ConnectionId, state);
+        public async Task ReadyGameStart() {
+            Console.WriteLine($"{Context.ConnectionId} : READY");
+            _gameState.SetPlayerState(Context.ConnectionId, "GameReady");
             await Clients.Group("default").SendAsync("Players", _gameState.GetPlayers());
 
-            if (_gameState.RoundReady()) {
+            if (_gameState.AreAllPlayersRoundReady()) {
+                _gameState.BeginGame();
                 await Clients.Group("default").SendAsync("Game", "Round Start");
                 await Clients.Group("default").SendAsync("GameSequence", _gameState.GenerateSequence());
             }
         }
 
-        public async Task SubmitRoundResults(bool survived) {
-            _gameState.SetPlayerState(Context.ConnectionId, survived ? "WonRound" : "LostRound");
-            await Clients.Group("default").SendAsync("Players", _gameState.GetPlayers());
 
-            if (_gameState.RoundOver()) {
+        public async Task SubmitRoundResults(bool survived) {
+            _gameState.PlayerSurvived(Context.ConnectionId, survived);
+            Console.WriteLine($"{Context.ConnectionId} : {survived}");
+            if (_gameState.IsRoundOver()) {
                 await Clients.Group("default").SendAsync("Game", "Round End");
+                if(_gameState.IsGameOver()) {
+                    Console.WriteLine("GAME OVER");
+                    _gameState.EndGame();
+                } else {
+                    _gameState.EndRound();
+                    _gameState.BeginRound();
+                    await Clients.Group("default").SendAsync("Game", "Round Start");
+                    await Clients.Group("default").SendAsync("GameSequence", _gameState.GenerateSequence());
+                }
             }
+
+            await Clients.Group("default").SendAsync("Players", _gameState.GetPlayers());
         }
     }
 }

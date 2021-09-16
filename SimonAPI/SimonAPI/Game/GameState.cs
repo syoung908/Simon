@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
@@ -32,13 +33,46 @@ namespace SimonAPI {
             return true;
         }
 
-        public bool RoundOver() {
+        public void BeginGame() {
+            _round = 1;
+            playerWon = null;
+            _inProgress = true;
+        }
+
+        public void EndGame() {
+
+        }
+
+        public bool IsRoundOver() {
             foreach (Player player in _players.Values) {
                 if (player.State == "Playing" || player.State == "GameReady") {
                     return false;
                 }
             }
             return true;
+        }
+
+        public bool IsGameOver() {
+            if(_players.Count == 1) {
+                Player singlePlayer = _players.Values.FirstOrDefault();
+                return singlePlayer.State == "LostRound";
+            } else {
+                return playerWon != null;
+            }
+        }
+
+        public void PlayerSurvived(string connectionId, bool survived) {
+            SetPlayerState(connectionId, survived ? "WonRound" : "LostRound");
+
+            //Multiplayer Win Condition
+            if(_players.Count > 1) {
+                int playersRemaining = 0;
+                foreach (Player player in _players.Values) {
+                    if (player.State == "WonRound" || player.State == "Playing") playersRemaining++;
+                }
+
+                if (playersRemaining == 1) playerWon = _players.Values.Where(p => p.State == "WonRound").SingleOrDefault();
+            }
         }
 
         public void BeginRound() {
@@ -49,7 +83,17 @@ namespace SimonAPI {
             }
         }
 
-        public bool RoundReady() {
+        public void EndRound() {
+            foreach (Player player in _players.Values) {
+                if (player.State == "WonRound") {
+                    player.State = "GameReady";
+                }
+
+                _round++;
+            }
+        }
+
+        public bool AreAllPlayersRoundReady() {
             foreach (Player player in _players.Values) {
                 if (player.State != "GameReady") {
                     return false;

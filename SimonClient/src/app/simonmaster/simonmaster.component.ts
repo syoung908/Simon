@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ServicesService } from '../services.service';
 import * as Tone from 'tone';
 import { GameService } from '../services/game.service';
+import { Player } from '../models/player.model';
+import { textChangeRangeIsUnchanged } from 'typescript';
 
 enum GameState{
   init = 0,
@@ -31,7 +33,9 @@ export class SimonmasterComponent implements OnInit {
   synth: Tone.Synth = new Tone.Synth().toMaster();
   gameState: GameState = this.GameState.init;
   playerPoints: number = 0;
-  result?:string;
+  result?: string;
+  playerList: Array<Player> = [];
+  playerLost: boolean = false;
 
   //Button map
   buttons: Map<string, Button> = new Map<string, Button>([
@@ -41,10 +45,11 @@ export class SimonmasterComponent implements OnInit {
     ["green", {id: 3, style: {opacity: "0.5"}, note: 'E2'}]
   ]);
 
-  constructor(private myservice:ServicesService, private gameservice: GameService) { }
+  constructor(private myservice:ServicesService, private gameservice: GameService) { 
+  }
 
   ngOnInit(): void {
-    this.sequence = this.myservice.generateArray(); //Update this to subscribe from backend
+    this.subscribeToEvents();
   }
 
   //Returns color string from id number. Returns empty string if id is not found.
@@ -81,7 +86,10 @@ export class SimonmasterComponent implements OnInit {
       this.result = "You lose!";
       this.gameState = this.GameState.init;
       this.playerSequence = [];
-      this.sequence = this.myservice.generateArray();
+      //this.sequence = this.myservice.generateArray();
+      this.submitRound(false);
+      this.playerLost = true;
+
     }
 
     if(this.playerSequence.length === this.sequence.length){
@@ -89,7 +97,8 @@ export class SimonmasterComponent implements OnInit {
       this.sequence.push(Math.floor(Math.random() * 4));
       this.playerSequence = [];
       this.gameState = this.GameState.cpuTurn;
-      setTimeout(() => this.playSequence(), 1000);
+      //setTimeout(() => this.playSequence(), 1000);
+      this.submitRound(true);
     }
   }
 
@@ -107,5 +116,32 @@ export class SimonmasterComponent implements OnInit {
     this.gameState = this.GameState.cpuTurn;
     this.result = "";
     this.playSequence();
+  }
+
+  private submitRound(survived: boolean) {
+    this.gameservice.submitRound(survived);
+  }
+
+  private subscribeToEvents() : void {
+    this.gameservice.gameEventChannel.subscribe(message => {
+      
+    });
+
+    this.gameservice.gameSequenceChannel.subscribe(sequence => {
+      if(!this.playerLost) {
+        this.sequence = sequence;
+        setTimeout(() => this.playSequence(), 5000);
+      }
+    });
+
+    this.gameservice.playerList.subscribe(players => {
+      this.playerList = players;
+    });
+
+    this.gameservice.connectedToGame.subscribe(isConnected => {
+      if (isConnected) {
+        this.gameservice.setReadyGameStart();
+      }
+    });
   }
 }
