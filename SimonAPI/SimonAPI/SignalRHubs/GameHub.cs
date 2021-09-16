@@ -7,7 +7,6 @@ namespace SimonAPI {
     public class GameHub: Hub {
 
         private readonly GameState _gameState;
-        //public GameHub(): this(GameState.Instance){}
         public GameHub(GameState gameState) {
             _gameState = gameState;
         }
@@ -48,6 +47,9 @@ namespace SimonAPI {
             }
         }
 
-
+        public async Task PlayerGameStatus(string state) {
+            _gameState.SetPlayerState(Context.ConnectionId, state);
+            await Clients.Group("default").SendAsync("Players", _gameState.GetPlayers());
+        }
     }
 }

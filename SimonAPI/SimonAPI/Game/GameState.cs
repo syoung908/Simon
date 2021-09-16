@@ -25,8 +25,32 @@ namespace SimonAPI {
         }
 
         public bool AllPlayersReady() {
-            foreach(Player player in _players.Values) {
+            foreach (Player player in _players.Values) {
                 if (player.State == "NotReady") return false;
+            }
+            return true;
+        }
+
+        public bool RoundOver() {
+            foreach (Player player in _players.Values) {
+                if (player.State == "Playing" || player.State == "GameReady") {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public void BeginRound() {
+            foreach (Player player in _players.Values) {
+                player.State = "Playing";
+            }
+        }
+
+        public bool RoundReady() {
+            foreach (Player player in _players.Values) {
+                if (player.State != "GameReady") {
+                    return false;
+                }
             }
             return true;
         }
