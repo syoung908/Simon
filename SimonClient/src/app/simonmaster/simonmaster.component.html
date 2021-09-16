@@ -6,9 +6,12 @@
     <div class="row">
         <div class="quarter-red quarter"[ngStyle]="buttons.get('red')!.style" (click)="buttonPress('red')"></div>
         <div class="quarter-blue quarter" [ngStyle]="buttons.get('blue')!.style" (click)="buttonPress('blue')"></div>
-    </div>   
+    </div>  
+    <div class="row-2">
+        <button class="btn btn-primary" *ngIf="gameState == GameState.init" (click)="startGame()">Start Game</button> 
+    </div>
 </div>
-<button *ngIf="gameState == GameState.init" (click)="startGame()">click Me</button>
+
 
 <h1 class="text-white" *ngIf="gameState === GameState.playerTurn">Player Turn</h1>
 <h1 class="text-white" *ngIf="gameState === GameState.cpuTurn">Cpu Turn</h1>
