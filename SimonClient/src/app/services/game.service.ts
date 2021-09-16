@@ -31,7 +31,7 @@ export class GameService {
       .then(() => {
         console.log('Hub connection started');
         this.connectionEstablished.next(true);
-        this.joinGame();
+        //this.joinGame();
       })
       .catch(_ => {
         console.log('Error while establishing connection, retrying...');
@@ -45,8 +45,8 @@ export class GameService {
     })
   }
 
-  public joinGame(): void {
-    this.hubConnection.invoke('JoinGame', "testname")
+  public joinGame(username:string): void {
+    this.hubConnection.invoke('JoinGame', username)
       .then(() => {
         console.log(`Connected to game`);
         this.connectedToGame.next(true);
@@ -54,7 +54,7 @@ export class GameService {
       .catch(err => {
         console.log(err);
         console.log('retrying...');
-        setTimeout(() => this.joinGame(), 5000);
+        setTimeout(() => this.joinGame(username), 5000);
       })
 
   }

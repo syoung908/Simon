@@ -13,17 +13,24 @@ export class LobbyComponent implements OnInit {
   public playerReady: boolean = false;
   public allPlayersReady: boolean = false;
   public countdownTimer: number;
-
+  public player : Player | any={
+    name: "",
+    state:""
+  };
   constructor(private gameservice: GameService, private router: Router) {
     this.countdownTimer = 10;
     this.subscribeToEvents();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // document.getElementById("exampleModalToggle")?.style.setProperty("display","block")
+    this.player.name = sessionStorage.getItem("username");
+  }
 
   public toggleReady(): void {
     this.playerReady = !this.playerReady;
     this.gameservice.setReadyStatus(this.playerReady);
+    
   }
 
   public startCountdown() {
@@ -48,6 +55,17 @@ export class LobbyComponent implements OnInit {
         this.startCountdown();
       }
     });
+  }
+
+  getUsername(username: string){
+    
+     sessionStorage.setItem("username",username)
+    if(username) {
+      this.gameservice.joinGame(username);
+      this.player.name = username;
+    }
+    else{}
+   
   }
 
 }
