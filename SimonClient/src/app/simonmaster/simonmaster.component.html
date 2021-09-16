@@ -1,12 +1,15 @@
 <div class="container">
     <div class="row">
-        <div class="quarter-yellow quarter" [ngStyle]="style_yellow" (click)="activateButton('yellow')"></div>
-        <div class="quarter-green quarter" [ngStyle]="style_green" (click)="activateButton('green')"></div>       
+        <div class="quarter-yellow quarter" [ngStyle]="buttons.get('yellow')!.style" (click)="buttonPress('yellow')"></div>
+        <div class="quarter-green quarter" [ngStyle]="buttons.get('green')!.style" (click)="buttonPress('green')"></div>       
     </div>
     <div class="row">
-        <div class="quarter-red quarter"[ngStyle]="style_red" (click)="activateButton('red')"></div>
-        <div class="quarter-blue quarter" [ngStyle]="style_blue" (click)="activateButton('blue')"></div>
+        <div class="quarter-red quarter"[ngStyle]="buttons.get('red')!.style" (click)="buttonPress('red')"></div>
+        <div class="quarter-blue quarter" [ngStyle]="buttons.get('blue')!.style" (click)="buttonPress('blue')"></div>
     </div>   
 </div>
-<button (click)="play()">click Me</button>
+<button *ngIf="gameState == GameState.init" (click)="startGame()">click Me</button>
 
+<h1 class="text-white" *ngIf="gameState === GameState.playerTurn">Player Turn</h1>
+<h1 class="text-white" *ngIf="gameState === GameState.cpuTurn">Cpu Turn</h1>
+<p *ngIf="gameState !== GameState.init">Points: {{playerPoints}}</p>
