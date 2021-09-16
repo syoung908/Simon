@@ -20,13 +20,13 @@ namespace SimonAPI {
             return _players.TryRemove(connectionId, out _);
         }
 
-        public void SetPlayerState(string connectionId, PlayerState state) {
+        public void SetPlayerState(string connectionId, string state) {
             _players[connectionId].State = state;
         }
 
         public bool AllPlayersReady() {
             foreach(Player player in _players.Values) {
-                if (player.State == PlayerState.NotReady) return false;
+                if (player.State == "NotReady") return false;
             }
             return true;
         }
