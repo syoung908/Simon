@@ -10,18 +10,22 @@
 // }
 .quarter-red{
     border-bottom-left-radius:100%;
+    border-top-right-radius:60%;
     background: red;   
 }
 .quarter-green{
     border-top-right-radius:100%;
+    border-bottom-left-radius:60%;
     background: green;
 }
 .quarter-blue{
     border-bottom-right-radius:100%;
+    border-top-left-radius:60%;
     background: blue;
 }
 .quarter-yellow{
     border-top-left-radius:100%;
+    border-bottom-right-radius:60%;
     background: yellow;
     
 }
