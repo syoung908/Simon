@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ServicesService } from '../services.service';
 import * as Tone from 'tone';
+import { GameService } from '../services/game.service';
 
 enum GameState{
   init = 0,
@@ -16,6 +17,7 @@ interface Button{
   },
   note: string
 }
+
 
 @Component({
   selector: 'app-simonmaster',
@@ -38,7 +40,7 @@ export class SimonmasterComponent implements OnInit {
     ["green", {id: 3, style: {opacity: "0.5"}, note: 'E2'}]
   ]);
 
-  constructor(private myservice:ServicesService) { }
+  constructor(private myservice:ServicesService, private gameservice: GameService) { }
 
   ngOnInit(): void {
     this.sequence = this.myservice.generateArray(); //Update this to subscribe from backend
