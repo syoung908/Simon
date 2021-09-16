@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ServicesService } from './services.service';
 import { SimonmasterComponent } from './simonmaster/simonmaster.component';
 
 @NgModule({
@@ -14,7 +15,7 @@ import { SimonmasterComponent } from './simonmaster/simonmaster.component';
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [ServicesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
