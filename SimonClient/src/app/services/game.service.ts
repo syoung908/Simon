@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -11,7 +11,8 @@ export class GameService {
   private hubConnection: HubConnection;
   public connectionEstablished = new BehaviorSubject<boolean>(false);
   public connectedToGame = new BehaviorSubject<boolean>(false);
-  public counter = 0;
+  public playerList = new BehaviorSubject<Array<Player>>([]);
+  public gameEventChannel = new EventEmitter<string>();
 
   constructor() {
     this.hubConnection = new HubConnectionBuilder()
@@ -30,7 +31,6 @@ export class GameService {
         console.log('Hub connection started');
         this.connectionEstablished.next(true);
         this.joinGame();
-        this.registerOnServerEvents();
       })
       .catch(_ => {
         console.log('Error while establishing connection, retrying...');
@@ -58,11 +58,19 @@ export class GameService {
 
   }
 
+  public setReadyStatus(isReady: boolean) {
+    this.hubConnection.invoke("PlayerReady", isReady);
+  }
+
 
   private registerOnServerEvents(): void {
     this.hubConnection.on('Players', (data: Array<Player>) => {
-      this.counter++;
-      console.log(this.counter);
+      this.playerList.next(data);
+      console.log(data);
+    });
+
+    this.hubConnection.on('Game', (data: string)=> {
+      this.gameEventChannel.emit(data);
       console.log(data);
     });
   }
