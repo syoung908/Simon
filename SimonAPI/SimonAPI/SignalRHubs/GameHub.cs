@@ -35,6 +35,10 @@ namespace SimonAPI {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, "default");
             _gameState.RemovePlayer(Context.ConnectionId);
             await Clients.Group("default").SendAsync("Players", _gameState.GetPlayers());
+
+            if (_gameState.GetPlayers().Count == 0) {
+                _gameState.EndGame();
+            }
         }
 
         public async Task PlayerReady(bool isReady) {
@@ -50,7 +54,6 @@ namespace SimonAPI {
         public async Task ReadyGameStart() {
             Console.WriteLine($"{Context.ConnectionId} : READY");
             _gameState.SetPlayerState(Context.ConnectionId, "GameReady");
-            await Clients.Group("default").SendAsync("Players", _gameState.GetPlayers());
 
             if (_gameState.AreAllPlayersRoundReady()) {
                 _gameState.BeginGame();
@@ -58,6 +61,7 @@ namespace SimonAPI {
                 await Clients.Group("default").SendAsync("Game", "Round Start");
                 await Clients.Group("default").SendAsync("GameSequence", _gameState.GenerateSequence());
             }
+            await Clients.Group("default").SendAsync("Players", _gameState.GetPlayers());
         }
 
 
@@ -68,17 +72,25 @@ namespace SimonAPI {
                 await Clients.Group("default").SendAsync("Game", "Round End");
                 if(_gameState.IsGameOver()) {
                     Player winner = _gameState.getWinner();
-                    await Clients.Group("default").SendAsync("Game", (winner == null)? "Game Over" : $"'{winner.Name}' Won");
+                    string message;
+                    if (winner == null) {
+                        message = "Game Over";
+                    } else if (winner.Name == null) {
+                        message = "Game Tied";
+                    } else {
+                        message = $"{winner.Name} Won";
+                    }
+                    await Clients.Group("default").SendAsync("Game", message);
+                    await Clients.Group("default").SendAsync("Players", _gameState.GetPlayers());
                     _gameState.EndGame();
                 } else {
                     _gameState.EndRound();
                     _gameState.BeginRound();
                     await Clients.Group("default").SendAsync("Game", "Round Start");
                     await Clients.Group("default").SendAsync("GameSequence", _gameState.GenerateSequence());
+                    await Clients.Group("default").SendAsync("Players", _gameState.GetPlayers());
                 }
             }
-
-            await Clients.Group("default").SendAsync("Players", _gameState.GetPlayers());
         }
     }
 }

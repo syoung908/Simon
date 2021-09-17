@@ -42,3 +42,46 @@
     justify-content: center;
     text-align: center;
 }
+
+.badge {
+    color: inherit;
+}
+
+#game-content {
+    display: flex;
+    height: calc(100vh - 180px);
+}
+
+#player-list-card {
+    max-width: 20%;
+    min-width: 300px;
+    height: 100%;
+}
+
+#game-container {
+    flex-grow: 1;
+    display: flex;
+    height: 100%;
+    margin-right: 15px;
+    flex-direction: column;
+    //align-items: center;
+    //justify-content: center;
+}
+
+#game-board {
+    min-width: 550px;
+}
+
+#game-data-panel {
+    justify-content: center;
+    text-align: center;
+    flex-basis: 20%;
+}
+
+#game-button-panel {
+    display: flex;
+    margin-top: 40px;
+    justify-content: center;
+    align-items: center;
+}
+

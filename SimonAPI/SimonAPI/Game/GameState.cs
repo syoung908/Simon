@@ -41,6 +41,9 @@ namespace SimonAPI {
 
         public void EndGame() {
             _inProgress = false;
+            foreach (Player player in _players.Values) {
+                player.State = "NotReady";
+            }
         }
 
         public bool IsRoundOver() {
@@ -72,6 +75,7 @@ namespace SimonAPI {
                 }
                 Console.WriteLine(playersRemaining);
                 if (playersRemaining == 1) playerWon = _players.Values.Where(p => p.State == "WonRound").SingleOrDefault();
+                else if (playersRemaining == 0) playerWon = new Player();
             }
         }
 

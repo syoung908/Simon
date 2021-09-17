@@ -1,21 +1,19 @@
-
 <app-username></app-username>
 <div class="container" >
   <h1 class="text-center">Simon Royale</h1>
-   
   <div id="lobby-content" class="container-fluid">
     <div id="ready-card" class="card">
-      <div id="ready-card-body" class="card-body text-center">
+      <div id="ready-card-body" class="card-body text-center bg-dark text-white">
         <div *ngIf="allPlayersReady; else waiting">
           <h4>Starting in: {{countdownTimer}}</h4>
         </div>
         <button id="ready-btn" *ngIf="player.name"class="btn" [ngClass]="playerReady ? 'btn-success': 'btn-primary'" [disabled]="allPlayersReady" (click)="toggleReady()">
           {{playerReady ? 'Cancel': 'Ready'}}
         </button>  
-        <a class="btn btn-primary" *ngIf="!player.name"  data-bs-toggle="modal" href="#exampleModalToggle" role="button">Create username</a>
+        <a class="btn btn-primary" *ngIf="!player.name"  data-bs-toggle="modal" href="#exampleModalToggle" role="button">Join Game</a>
       </div>
     </div>
-    <div id="player-list-card" class="card">
+    <div id="player-list-card" class="card bg-dark text-white">
       <div class="card-header text-center">
         Players In Lobby: {{playerList.length}}
       </div>

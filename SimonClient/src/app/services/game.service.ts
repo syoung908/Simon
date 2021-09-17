@@ -56,7 +56,10 @@ export class GameService {
         console.log('retrying...');
         setTimeout(() => this.joinGame(username), 5000);
       })
+  }
 
+  public leaveGame(): void {
+    this.hubConnection.invoke('LeaveGame');
   }
 
   public setReadyStatus(isReady: boolean) {
