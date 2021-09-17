@@ -21,6 +21,12 @@ export class LobbyComponent implements OnInit {
     state: ""
   };
   constructor(private gameservice: GameService, private userservice: UserService, private router: Router) {
+    this.userservice.userName.subscribe(username => {
+      if (username) {
+        this.gameservice.joinGame(username);
+        this.player.name = username;
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -58,14 +64,6 @@ export class LobbyComponent implements OnInit {
               this.countdownTimer -= 1;
             }
           }, 1000);
-        }
-      })
-    );
-    this.subscriptions.add(
-      this.userservice.userName.subscribe(username => {
-        if (username) {
-          this.gameservice.joinGame(username);
-          this.player.name = username;
         }
       })
     );

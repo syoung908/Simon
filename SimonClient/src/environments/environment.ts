@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   api: {
-    //url: "https://localhost:44302"
-    url: "https://simonsignalr.azurewebsites.net"
+    url: "https://localhost:44302"
+    //url: "https://simonapi.azurewebsites.net"
   }
 };
 
