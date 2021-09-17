@@ -43,6 +43,7 @@ export class SimonmasterComponent implements OnInit {
   titleMessage: string;
   subtitleMessage: string;
   gameOver: boolean;
+  roundActive: boolean;
 
   subscriptions = new Subscription();
 
@@ -59,6 +60,7 @@ export class SimonmasterComponent implements OnInit {
     this.titleMessage = "Waiting for all players to join...";
     this.subtitleMessage = "Starting first round";
     this.gameOver = false;
+    this.roundActive = false;
   }
 
   ngOnInit(): void {
@@ -109,6 +111,7 @@ export class SimonmasterComponent implements OnInit {
       this.playerSequence = [];
       this.submitRound(false);
       this.playerLost = true;
+      this.roundActive = false;
 
     }
 
@@ -117,6 +120,7 @@ export class SimonmasterComponent implements OnInit {
       this.playerSequence = [];
       this.gameState = this.GameState.cpuTurn;
       this.submitRound(true);
+      this.roundActive = false;
     }
   }
 
@@ -158,6 +162,8 @@ export class SimonmasterComponent implements OnInit {
 
     this.subscriptions.add(
       this.gameservice.gameSequenceChannel.subscribe(sequence => {
+        if (this.roundActive) return;
+        this.roundActive = true;
         this.round++;
         this.titleMessage = `Round ${(this.round == 0) ? 1 : this.round}`;
         if (!this.playerLost) {
